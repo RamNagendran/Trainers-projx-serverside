@@ -1,0 +1,40 @@
+{
+    "compilerOptions": {
+        /* Basic Options */
+        "target": "es5",
+        "module": "commonjs",
+        "lib": [
+            "es6"
+        ],
+        "allowJs": true,
+        /* Strict Type-Checking Options */
+        "strict": true,
+        "noImplicitAny": true,
+        "outDir": "dist",
+        /* Module Resolution Options */
+        // "moduleResolution": "node",
+        // "baseUrl": "./",
+        // "paths": {},
+        /* Source Map Options */
+        // "sourceRoot": "",
+        // "mapRoot": "",
+        // "inlineSourceMap": true,
+        // "inlineSources": true,
+        /* Experimental Options */
+        // "experimentalDecorators": true,
+        // "emitDecoratorMetadata": true,
+        /* Advanced Options */
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        /* Custom Options */
+        // You can add your custom compiler options here if needed.
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.tsx"
+    ], // Specify your source files
+    "exclude": [
+        "node_modules",
+        "build"
+    ] // Exclude directories not needing compilation
+}
