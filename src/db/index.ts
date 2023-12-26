@@ -1,6 +1,5 @@
-import { Request, Response } from "express";
-import { Pool } from "pg";
 import bcrypt from "bcrypt";
+import { Pool } from "pg";
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -32,9 +31,10 @@ export const checkCredentials = async (req: LoginCredentials) => {
   const client = await pool.connect();
   try {
     const dbResult = await client.query(
-      `SELECT unique_id, email_id, name, password, isadmin FROM login_credentials WHERE email_id = $1`,
+      `SELECT * FROM login_credentials WHERE email_id = $1`,
       [req.userEmailId]
     );
+
     if (dbResult.rows.length === 0) {
       return {
         authentication: false,
@@ -53,9 +53,11 @@ export const checkCredentials = async (req: LoginCredentials) => {
       authentication: true,
       result: {
         user_id: dbResult.rows[0].unique_id,
-        user_name: dbResult.rows[0].name,
+        user_name: dbResult.rows[0].user_name,
+        first_name: dbResult.rows[0].first_name,
+        last_name: dbResult.rows[0].last_name,
         user_emailId: dbResult.rows[0].email_id,
-        is_admin: dbResult.rows[0].isadmin
+        is_admin: dbResult.rows[0].is_admin
       }
     };
   } catch (error) {
@@ -64,3 +66,45 @@ export const checkCredentials = async (req: LoginCredentials) => {
     client.release();
   }
 };
+
+export async function fetchAllUsers() {
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT unique_id, user_name, first_name, last_name, email_id, is_admin FROM login_credentials')
+    if (result) {
+      return result?.rows;
+    }
+  } catch (error) {
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+export async function fetchSelectedUserBatches(emailId: string) {
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM batch_details WHERE email_id = $1', [emailId])
+    if (result) {
+      return result?.rows;
+    }
+  } catch (error) {
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+export async function fetchAllTasks() {
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM task_credentials');
+    if (result) {
+      return result.rows;
+    }
+  } catch (error) {
+    throw error;
+  } finally {
+    client.release();
+  }
+}
